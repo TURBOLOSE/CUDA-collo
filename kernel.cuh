@@ -39,16 +39,12 @@ __global__ void kernel(num_t *dinputdata, num_t t0, num_t *doutputdata, std::opt
 	int pos = blockIdx.x * blockDim.x + threadIdx.x;
 
 	//=========================================
-	num_t Gm[Nb] = {132712440041.279419, 22031.868551, 324858.592000, 398600.435507, 42828.375816, 126712764.100000, 37940584.841800,
+	/*num_t Gm[Nb] = {132712440041.279419, 22031.868551, 324858.592000, 398600.435507, 42828.375816, 126712764.100000, 37940584.841800,
 					5794556.400000, 6836527.100580, 975.500000, 62.62890, 17.288245, 4902.800118}; // km^3 s^-2
-
-	// num_t* par1=new num_t[Nb*system_order/2*method_stage];
-	// matrix_t time_nodes1;
-
 	for (size_t i = 0; i < Nb; i++)
 	{
 		Gm[i] *= 86400.0 * 86400 / pow(1.495978707e8, 3);
-	}
+	}*/
 
 	// num_t H1,H, R1, R, h1;
 	//=========================================
@@ -136,6 +132,7 @@ __global__ void kernel(num_t *dinputdata, num_t t0, num_t *doutputdata, std::opt
 		}
 	}
 
+	__syncthreads();
 
 	alphas = sva_t::Zero();
 

@@ -31,31 +31,33 @@ public:
     {
         using matrix_t = Eigen::Matrix<double, method_stage, method_stage>;
         out = new num_t[maxstep * system_order * blocks * threads / skipstep];
-        if(!parp) // if no parameters passed
-        plength=0;
-        /*std::ifstream ind("temp.dat");
-        Eigen::Matrix<num_t, method_stage, method_stage> inv_lsm0;
-        Eigen::Matrix<num_t, method_stage, 1> time_nodes0;
-        Eigen::Matrix<num_t, method_stage, method_stage> sv_nodes0;
 
-        for (size_t i = 0; i < method_stage; i++) // ввод констант
-            ind >> time_nodes0(i);
+        if (!parp) // if no parameters passed
+            plength = 0;
 
-        for (size_t i = 0; i < method_stage; i++)
-        {
-            for (size_t j = 0; j < method_stage; j++)
-                ind >> sv_nodes0(i, j);
-        }
+        /* std::ifstream ind("temp.dat");
+         Eigen::Matrix<num_t, method_stage, method_stage> inv_lsm1;
+         Eigen::Matrix<num_t, method_stage, 1> time_nodes1;
+         Eigen::Matrix<num_t, method_stage, method_stage> sv_nodes1;
 
-        for (size_t i = 0; i < method_stage; i++)
-        {
-            for (size_t j = 0; j < method_stage; j++)
-                ind >> inv_lsm0(i, j);
-        }*/
+         for (size_t i = 0; i < method_stage; i++) // ввод констант
+             ind >> time_nodes1(i);
+
+         for (size_t i = 0; i < method_stage; i++)
+         {
+             for (size_t j = 0; j < method_stage; j++)
+                 ind >> sv_nodes1(i, j);
+         }
+
+         for (size_t i = 0; i < method_stage; i++)
+         {
+             for (size_t j = 0; j < method_stage; j++)
+                 ind >> inv_lsm1(i, j);
+         }*/
 
         Eigen::Matrix<num_t, method_stage, 1> time_nodes;
         auto time_nodes0 = numm::roots_ilegendre_sh<method_stage - 1, double>();
-        time_nodes=Eigen::Matrix<num_t, method_stage, 1>(time_nodes0.data());
+        time_nodes = Eigen::Matrix<num_t, method_stage, 1>(time_nodes0.data());
 
         auto sv_nodes0 = numm::legendre_sh<method_stage>(time_nodes0);
         auto base = numm::legendre_sh<method_stage>(0.0);
@@ -63,16 +65,12 @@ public:
             for (std::size_t i = 0; i <= method_stage; ++i)
                 row[i] -= base[i];
 
-
         Eigen::Matrix<num_t, method_stage, method_stage> sv_nodes;
         for (size_t i = 0; i < method_stage; i++)
         {
-            for (size_t j = 0; j < method_stage; j++)
-                sv_nodes(i, j)=sv_nodes0[i][j];
+            for (size_t j = 1; j <= method_stage; j++)
+                sv_nodes(i, j - 1) = sv_nodes0[i][j];
         }
-        
-
-
 
         std::array<double, method_stage * method_stage> lsm{};
         auto it = std::begin(lsm);
@@ -80,7 +78,27 @@ public:
             it = std::copy(std::next(row.begin()), row.end(), it);
         static const matrix_t inv_lsm = matrix_t(lsm.data()).inverse();
 
-  
+        /*for(size_t i =0; i< method_stage; i++)
+        {
+            std::cout<< time_nodes(i) <<" "<< time_nodes1(i)<<std::endl;
+        }
+        std::cout<<std::endl;
+
+        for(size_t i =0; i< method_stage; i++)
+        {
+            for(size_t j =0; j< method_stage; j++)
+            std::cout<< sv_nodes(i,j) <<" ";
+            std::cout<<std::endl;
+        }
+        std::cout<<std::endl;
+
+        for(size_t i =0; i< method_stage; i++)
+        {
+            for(size_t j =0; j< method_stage; j++)
+            std::cout<< sv_nodes1(i,j) <<" ";
+            std::cout<<std::endl;
+        }
+        std::cout<<std::endl;*/
 
         cudaMalloc((void **)&time_nodesd, sizeof(Eigen::Matrix<num_t, method_stage, 1>)); // выделение памяти
         cudaMalloc((void **)&sv_nodesd, sizeof(Eigen::Matrix<num_t, method_stage, method_stage>));

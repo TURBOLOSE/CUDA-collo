@@ -5,13 +5,13 @@ using namespace std;
 
 int main()
 {
-
+    
     constexpr size_t method_stage = 7;
     constexpr size_t system_order = 6;
 
     constexpr size_t Nb = 13;
 
-    constexpr size_t maxstep = 1;
+    constexpr size_t maxstep = 365;
     constexpr size_t skipstep = 1; // записывать данные каждые skipstep шагов
     // skipstep должно быть делителем maxstep
 
@@ -55,9 +55,9 @@ int main()
 
     test.do_steps();
     std::cout << "calculations done" << std::endl;
-    // test.write();
+    test.write();
     // test.write_last_steps();
-    test.print();
+    //test.print();
 
     delete par;
     std::cout << maxstep << " steps done" << std::endl;
