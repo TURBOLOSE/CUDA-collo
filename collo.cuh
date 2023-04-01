@@ -17,10 +17,7 @@ private:
 
 public:
     num_t *y0;
-    // Eigen::Matrix<num_t, maxstep/skipstep, system_order> out;
     num_t *out;
-    // std::optional<num_t *>  par;
-    // std::optional<size_t> plength;
     num_t *par;
     size_t plength;
     num_t h, t0;
@@ -35,25 +32,6 @@ public:
         if (!parp) // if no parameters passed
             plength = 0;
 
-        /* std::ifstream ind("temp.dat");
-         Eigen::Matrix<num_t, method_stage, method_stage> inv_lsm1;
-         Eigen::Matrix<num_t, method_stage, 1> time_nodes1;
-         Eigen::Matrix<num_t, method_stage, method_stage> sv_nodes1;
-
-         for (size_t i = 0; i < method_stage; i++) // ввод констант
-             ind >> time_nodes1(i);
-
-         for (size_t i = 0; i < method_stage; i++)
-         {
-             for (size_t j = 0; j < method_stage; j++)
-                 ind >> sv_nodes1(i, j);
-         }
-
-         for (size_t i = 0; i < method_stage; i++)
-         {
-             for (size_t j = 0; j < method_stage; j++)
-                 ind >> inv_lsm1(i, j);
-         }*/
 
         Eigen::Matrix<num_t, method_stage, 1> time_nodes;
         auto time_nodes0 = numm::roots_ilegendre_sh<method_stage - 1, double>();
@@ -78,27 +56,6 @@ public:
             it = std::copy(std::next(row.begin()), row.end(), it);
         static const matrix_t inv_lsm = matrix_t(lsm.data()).inverse();
 
-        /*for(size_t i =0; i< method_stage; i++)
-        {
-            std::cout<< time_nodes(i) <<" "<< time_nodes1(i)<<std::endl;
-        }
-        std::cout<<std::endl;
-
-        for(size_t i =0; i< method_stage; i++)
-        {
-            for(size_t j =0; j< method_stage; j++)
-            std::cout<< sv_nodes(i,j) <<" ";
-            std::cout<<std::endl;
-        }
-        std::cout<<std::endl;
-
-        for(size_t i =0; i< method_stage; i++)
-        {
-            for(size_t j =0; j< method_stage; j++)
-            std::cout<< sv_nodes1(i,j) <<" ";
-            std::cout<<std::endl;
-        }
-        std::cout<<std::endl;*/
 
         cudaMalloc((void **)&time_nodesd, sizeof(Eigen::Matrix<num_t, method_stage, 1>)); // выделение памяти
         cudaMalloc((void **)&sv_nodesd, sizeof(Eigen::Matrix<num_t, method_stage, method_stage>));
@@ -177,6 +134,7 @@ public:
         std::string path0 = "result/res";
         std::string path1 = ".dat";
 
+        std::cout<<"writing..."<<std::endl;
         for (size_t nres = 0; nres < blocks * threads; nres++) // nres -- number of res_n file
         {
 
@@ -193,6 +151,8 @@ public:
             }
             outfile[nres].close();
         }
+
+        std::cout<<"writing done"<<std::endl;
     }
 
     void write_last_steps()

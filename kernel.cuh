@@ -31,7 +31,7 @@ __global__ void kernel(num_t *dinputdata, num_t t0, num_t *doutputdata, std::opt
 	const size_t maxiter = 50;
 	sva_t alphas_prev, f;
 	constexpr size_t Nb = 13;
-	__shared__ num_t parloc[Nb * method_stage * 3];
+	extern __shared__ num_t parloc[Nb * method_stage * 3];
 
 	int pos = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -106,5 +106,13 @@ __global__ void kernel(num_t *dinputdata, num_t t0, num_t *doutputdata, std::opt
 				doutputdata[(step / skipstep + j * maxstep / skipstep) + pos * maxstep * system_order / skipstep] = y(j);
 			// output tables where every column = system_order, every row=maxstep, pos=number of table
 		}
+
+
+		if(pos==0 && ((int) (step*100.)/maxstep >  (int) ((step-1)*100.)/maxstep ))  //progress counter
+		printf("\r progress:[%3d%%]", (int) (step*100.)/maxstep);
+
 	}
+
+	if(pos==0)
+	printf("\n");
 }
