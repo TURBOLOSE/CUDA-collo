@@ -1,3 +1,4 @@
+#pragma once
 #include "kernel.cuh"
 
 template <typename num_t, size_t system_order, size_t method_stage>

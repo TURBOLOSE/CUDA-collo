@@ -1,3 +1,4 @@
+#pragma once
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <eigen3/Eigen/Dense>
@@ -6,7 +7,8 @@
 #include <iostream>
 #include <string>
 #include <optional>
-#include "rhs1.cuh"
+
+
 
 template <typename num_t, size_t system_order, size_t method_stage>
 __global__ void kernel(num_t *dinputdata, num_t t0, num_t *doutputdata, std::optional<num_t *> par, num_t *dtime_nodes,

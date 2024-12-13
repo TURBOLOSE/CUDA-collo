@@ -6,8 +6,8 @@
 __device__ void rhs(double *y, double *yd, double t, double *par, size_t step, size_t iternum)
 {
 
-	constexpr int Nb = 13; // число тел в par
-	constexpr int dim = 6; // размерность вектора
+	constexpr int Nb = 13; // bodies in par vector
+	constexpr int dim = 6; // vector dimensionn
 	// const double au=149597870;
 	constexpr int method_stage = 7;
 

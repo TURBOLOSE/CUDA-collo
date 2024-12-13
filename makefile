@@ -1,16 +1,9 @@
 .PHONY: clean, time
-all: run_test 
-	./run_test
+all: main 
 
-run_test: test.cu rhs1.cuh kernel.cuh collo.cuh
-	nvc++ -std=c++20 -g -pg -O3 test.cu  -o run_test 
-
-
-consts: const.cpp temp.dat
-	g++ -I. const.cpp  -std=c++20 -O3 -march=native -Wfatal-errors -o const
-	./const
-
+main: main.cu rhs/VDP.cuh kernel.cuh collo.cuh
+	nvc++ -std=c++23 -pg -O3 main.cu  -o main 
 clean: 
-	rm -f run_test
-time: run_test
-	time ./run_test
+	rm -f main
+time: main
+	time ./main
